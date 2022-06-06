@@ -20,8 +20,9 @@ class Task {
     this.priority = priority;
   }
 
-  set setCompleted(bool completed) {
-    this.completed = completed;
+  void toggleCompleted() {
+    completed = !completed;
+    print('I mnade it here and it is $completed');
   }
 
   String get getUuid {

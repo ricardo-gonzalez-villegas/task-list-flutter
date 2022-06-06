@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'task_list_obj.dart';
 import 'task_obj.dart';
 import './widgets/task.dart';
 
-Task one = Task('one', 'description', 'low');
-Task two = Task('two', 'description', 'low');
-Task three = Task('three', 'description', 'low');
-Task four = Task('four', 'description', 'med');
-Task five = Task('five', 'description', 'med');
-Task six = Task('six', 'description', 'med');
-Task seven = Task('seven', 'description', 'high');
-Task eight = Task('eight', 'description', 'high');
-Task nine = Task('nine', 'description', 'high');
+Task one = Task('task one', 'description', 'low');
+Task two = Task('task two', 'description', 'low');
+Task three = Task('task three', 'description', 'low');
+Task four = Task('task four', 'description', 'med');
+Task five = Task('task five', 'description', 'med');
+Task six = Task('task six', 'description', 'med');
+Task seven = Task('task seven', 'description', 'high');
+Task eight = Task('task eight', 'description', 'high');
+Task nine = Task('task nine', 'description', 'high');
 TaskList list = TaskList();
 void main(List<String> args) {
   list.addTask(one);
@@ -35,6 +36,12 @@ class MyApp extends StatelessWidget {
       title: 'Task List',
       home: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () => print('I was pressed'),
+                icon: const FaIcon(FontAwesomeIcons.plus))
+          ],
+          backgroundColor: const Color.fromARGB(255, 21, 87, 101),
           title: const Text('Task List'),
         ),
         body: const Center(
@@ -59,13 +66,12 @@ class _TaskListViewState extends State<TaskListView> {
       itemCount: list.size(),
       itemBuilder: (BuildContext context, int index) {
         Task task = list.getTaskFromIndex(index);
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: TaskView(
-            name: task.getName,
-            description: task.getDescription,
-            priority: task.getPriority,
-          ),
+        return TaskView(
+          name: task.getName,
+          description: task.getDescription,
+          priority: task.getPriority,
+          completed: task.getCompleted,
+          toggleCompleted: task.toggleCompleted,
         );
       },
     );
