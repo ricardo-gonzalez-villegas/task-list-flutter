@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/material.dart';
 import 'task_list_obj.dart';
 import 'task_obj.dart';
 import './widgets/task.dart';
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () => print('I was pressed'),
-                icon: const FaIcon(FontAwesomeIcons.plus))
+                icon: const FaIcon(FontAwesomeIcons.squarePlus))
           ],
           backgroundColor: const Color.fromARGB(255, 21, 87, 101),
           title: const Text('Task List'),
