@@ -1,21 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/material.dart';
+import '/task_obj.dart';
 
 class TaskView extends StatefulWidget {
-  TaskView({
+  const TaskView({
     super.key,
-    required this.name,
-    required this.description,
-    required this.priority,
-    required this.completed,
-    required this.toggleCompleted,
+    required this.task,
   });
 
-  final String name;
-  final String description;
-  final String priority;
-  bool completed;
-  final VoidCallback toggleCompleted;
+  final Task task;
 
   @override
   State<TaskView> createState() => _TaskViewState();
@@ -23,9 +16,8 @@ class TaskView extends StatefulWidget {
 
 class _TaskViewState extends State<TaskView> {
   void _handleClick() {
-    widget.toggleCompleted();
     setState(() {
-      widget.completed = !widget.completed;
+      widget.task.toggleCompleted();
     });
   }
 
@@ -47,12 +39,14 @@ class _TaskViewState extends State<TaskView> {
       child: Column(
         children: [
           Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(15),
                 topLeft: Radius.circular(15),
               ),
-              color: Color.fromARGB(255, 102, 171, 140),
+              color: (widget.task.getCompleted)
+                  ? const Color.fromARGB(255, 21, 87, 101)
+                  : const Color.fromARGB(255, 102, 171, 140),
             ),
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
             child: Row(
@@ -62,11 +56,16 @@ class _TaskViewState extends State<TaskView> {
                   child: Container(
                       margin: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                       child: Text(
-                        widget.name.toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
+                        widget.task.getName.toUpperCase(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontStyle: (widget.task.getCompleted)
+                                ? FontStyle.italic
+                                : null,
+                            decoration: (widget.task.getCompleted)
+                                ? TextDecoration.lineThrough
+                                : null),
                       )),
                 ),
                 Expanded(
@@ -76,9 +75,9 @@ class _TaskViewState extends State<TaskView> {
                     child: IconButton(
                       constraints: const BoxConstraints(),
                       padding: EdgeInsets.zero,
-                      color: (widget.completed) ? Colors.black87 : Colors.white,
+                      color: Colors.white,
                       onPressed: () => _handleClick(),
-                      icon: (widget.completed)
+                      icon: (widget.task.getCompleted)
                           ? const FaIcon(FontAwesomeIcons.squareCheck)
                           : const FaIcon(FontAwesomeIcons.square),
                       iconSize: 22,
@@ -112,7 +111,7 @@ class _TaskViewState extends State<TaskView> {
                         ),
                       ),
                       Text(
-                        widget.priority.toUpperCase(),
+                        widget.task.getPriority.toUpperCase(),
                         style: const TextStyle(
                           color: Colors.black87,
                           fontSize: 14,
