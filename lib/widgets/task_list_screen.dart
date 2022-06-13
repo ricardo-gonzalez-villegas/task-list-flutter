@@ -1,25 +1,39 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'task_view.dart';
-import '/task_obj.dart';
-import '/task_list_obj.dart';
+import 'task_item.dart';
 
-class TaskListScreen extends StatefulWidget {
-  const TaskListScreen({super.key, required this.taskList});
-  final TaskList taskList;
-
-  @override
-  State<TaskListScreen> createState() => _TaskListScreenState();
-}
-
-class _TaskListScreenState extends State<TaskListScreen> {
+class TaskListScreen extends StatelessWidget {
+  TaskListScreen({Key? key}) : super(key: key);
+  final Stream<QuerySnapshot> tasks =
+      FirebaseFirestore.instance.collection('tasks').snapshots();
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.taskList.size(),
-      itemBuilder: (BuildContext context, int index) {
-        Task task = widget.taskList.getTaskFromIndex(index);
-        return TaskView(
-          task: task,
+    return StreamBuilder<QuerySnapshot>(
+      stream: tasks,
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<QuerySnapshot> snapshot,
+      ) {
+        if (snapshot.hasError) {
+          return const Text('Something went wrong');
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text('Loading');
+        }
+
+        final data = snapshot.requireData;
+
+        return ListView.builder(
+          itemCount: data.size,
+          itemBuilder: ((context, index) {
+            return TaskItem(
+              id: data.docs[index].reference.id,
+              name: data.docs[index]['name'],
+              description: data.docs[index]['description'],
+              priority: data.docs[index]['priority'],
+              completed: data.docs[index]['completed'],
+            );
+          }),
         );
       },
     );

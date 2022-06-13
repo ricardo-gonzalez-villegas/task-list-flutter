@@ -1,11 +1,11 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:task_list/main.dart';
 
 class CreateTaskScreen extends StatelessWidget {
   CreateTaskScreen({Key? key}) : super(key: key);
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,12 +40,16 @@ class TaskForm extends StatefulWidget {
 }
 
 class _TaskFormState extends State<TaskForm> {
-  String _dropdownValue = 'Low';
+  String _name = '';
+  String _dropdownValue = "Low";
   bool _nameIsMaxLength = false;
   bool _descriptionIsMaxLength = false;
+  String _description = '';
+  String _priority = 'Low';
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference tasks = FirebaseFirestore.instance.collection('tasks');
     return Form(
       key: widget.formKey,
       child: Column(
@@ -62,6 +66,7 @@ class _TaskFormState extends State<TaskForm> {
                 TextFormField(
                   maxLength: 20,
                   onChanged: (value) {
+                    _name = value;
                     setState(() {
                       _nameIsMaxLength = (value.length == 20) ? true : false;
                     });
@@ -96,9 +101,10 @@ class _TaskFormState extends State<TaskForm> {
                   maxLength: 100,
                   maxLines: 5,
                   onChanged: (value) {
+                    _description = value;
                     setState(() {
                       _descriptionIsMaxLength =
-                          (value.length == 100) ? true : false;
+                          (value.length == 200) ? true : false;
                     });
                   },
                   decoration: InputDecoration(
@@ -128,23 +134,26 @@ class _TaskFormState extends State<TaskForm> {
                   style: TextStyle(fontSize: 16),
                 ),
                 DropdownButtonFormField(
-                    decoration: const InputDecoration(
-                      fillColor: Color.fromARGB(255, 215, 225, 231),
-                      filled: true,
-                    ),
-                    value: _dropdownValue,
-                    items: <String>['Low', 'Med', 'High']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _dropdownValue = newValue!;
-                      });
-                    })
+                  value: _dropdownValue,
+                  decoration: const InputDecoration(
+                    fillColor: Color.fromARGB(255, 215, 225, 231),
+                    filled: true,
+                  ),
+                  items: <String>['Low', 'Med', 'High']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    _priority = newValue!;
+
+                    setState(() {
+                      _dropdownValue = newValue;
+                    });
+                  },
+                )
               ],
             ),
           ),
@@ -155,7 +164,18 @@ class _TaskFormState extends State<TaskForm> {
               ),
               onPressed: () {
                 if (widget.formKey.currentState!.validate()) {
+                  tasks.add({
+                    'name': _name,
+                    'description': _description,
+                    'priority': _priority,
+                    'completed': false,
+                  });
+
                   widget.formKey.currentState!.reset();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyApp()),
+                  );
                 }
               },
               child: const Text('Submit'))

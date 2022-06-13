@@ -1,23 +1,36 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '/task_obj.dart';
+import './task_details_screen.dart';
 
-class TaskView extends StatefulWidget {
-  const TaskView({
+// ignore: must_be_immutable
+class TaskItem extends StatefulWidget {
+  TaskItem({
     super.key,
-    required this.task,
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.priority,
+    required this.completed,
   });
 
-  final Task task;
+  final String id;
+  final String name;
+  final String description;
+  final String priority;
+  bool completed;
 
   @override
-  State<TaskView> createState() => _TaskViewState();
+  State<TaskItem> createState() => _TaskItemState();
 }
 
-class _TaskViewState extends State<TaskView> {
-  void _handleClick() {
+class _TaskItemState extends State<TaskItem> {
+  void toggleCompleted() {
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection('tasks').doc(widget.id);
     setState(() {
-      widget.task.toggleCompleted();
+      docRef.update({'completed': !widget.completed});
+      widget.completed = !widget.completed;
     });
   }
 
@@ -44,9 +57,9 @@ class _TaskViewState extends State<TaskView> {
                 topRight: Radius.circular(15),
                 topLeft: Radius.circular(15),
               ),
-              color: (widget.task.getCompleted)
+              color: (!widget.completed)
                   ? const Color.fromARGB(255, 21, 87, 101)
-                  : const Color.fromARGB(255, 102, 171, 140),
+                  : const Color.fromARGB(255, 69, 70, 70),
             ),
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
             child: Row(
@@ -56,14 +69,13 @@ class _TaskViewState extends State<TaskView> {
                   child: Container(
                       margin: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                       child: Text(
-                        widget.task.getName.toUpperCase(),
+                        widget.name.toString().toUpperCase(),
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 14,
-                            fontStyle: (widget.task.getCompleted)
-                                ? FontStyle.italic
-                                : null,
-                            decoration: (widget.task.getCompleted)
+                            fontStyle:
+                                (widget.completed) ? FontStyle.italic : null,
+                            decoration: (widget.completed)
                                 ? TextDecoration.lineThrough
                                 : null),
                       )),
@@ -76,8 +88,8 @@ class _TaskViewState extends State<TaskView> {
                       constraints: const BoxConstraints(),
                       padding: EdgeInsets.zero,
                       color: Colors.white,
-                      onPressed: () => _handleClick(),
-                      icon: (widget.task.getCompleted)
+                      onPressed: () => toggleCompleted(),
+                      icon: (widget.completed)
                           ? const FaIcon(FontAwesomeIcons.squareCheck)
                           : const FaIcon(FontAwesomeIcons.square),
                       iconSize: 22,
@@ -111,7 +123,7 @@ class _TaskViewState extends State<TaskView> {
                         ),
                       ),
                       Text(
-                        widget.task.getPriority.toUpperCase(),
+                        widget.priority.toUpperCase(),
                         style: const TextStyle(
                           color: Colors.black87,
                           fontSize: 14,
@@ -127,8 +139,14 @@ class _TaskViewState extends State<TaskView> {
                     child: IconButton(
                       constraints: const BoxConstraints(),
                       padding: EdgeInsets.zero,
-                      onPressed: () => print('I was pressed'),
-                      icon: const FaIcon(FontAwesomeIcons.penToSquare),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TaskDetailsScreen(id: widget.id),
+                        ),
+                      ),
+                      icon: const FaIcon(FontAwesomeIcons.ellipsis),
                       color: Colors.black87,
                       iconSize: 22,
                     ),
