@@ -37,7 +37,7 @@ class _TaskItemState extends State<TaskItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+      margin: const EdgeInsets.fromLTRB(10, 15, 10, 15),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(15)),
         boxShadow: [
@@ -146,7 +146,7 @@ class _TaskItemState extends State<TaskItem> {
                               TaskDetailsScreen(id: widget.id),
                         ),
                       ),
-                      icon: const FaIcon(FontAwesomeIcons.ellipsis),
+                      icon: const FaIcon(FontAwesomeIcons.caretDown),
                       color: Colors.black87,
                       iconSize: 22,
                     ),

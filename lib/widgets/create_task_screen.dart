@@ -40,10 +40,9 @@ class TaskForm extends StatefulWidget {
 }
 
 class _TaskFormState extends State<TaskForm> {
-  String _name = '';
-  String _dropdownValue = "Low";
   bool _nameIsMaxLength = false;
   bool _descriptionIsMaxLength = false;
+  String _name = '';
   String _description = '';
   String _priority = 'Low';
 
@@ -64,11 +63,11 @@ class _TaskFormState extends State<TaskForm> {
                   style: TextStyle(fontSize: 16),
                 ),
                 TextFormField(
-                  maxLength: 20,
+                  maxLength: 30,
                   onChanged: (value) {
                     _name = value;
                     setState(() {
-                      _nameIsMaxLength = (value.length == 20) ? true : false;
+                      _nameIsMaxLength = (value.length == 30) ? true : false;
                     });
                   },
                   decoration: InputDecoration(
@@ -98,7 +97,7 @@ class _TaskFormState extends State<TaskForm> {
                   style: TextStyle(fontSize: 16),
                 ),
                 TextFormField(
-                  maxLength: 100,
+                  maxLength: 200,
                   maxLines: 5,
                   onChanged: (value) {
                     _description = value;
@@ -114,12 +113,6 @@ class _TaskFormState extends State<TaskForm> {
                     fillColor: const Color.fromARGB(255, 215, 225, 231),
                     filled: true,
                   ),
-                  validator: ((value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter text.';
-                    }
-                    return null;
-                  }),
                 ),
               ],
             ),
@@ -134,7 +127,7 @@ class _TaskFormState extends State<TaskForm> {
                   style: TextStyle(fontSize: 16),
                 ),
                 DropdownButtonFormField(
-                  value: _dropdownValue,
+                  value: "Low",
                   decoration: const InputDecoration(
                     fillColor: Color.fromARGB(255, 215, 225, 231),
                     filled: true,
@@ -148,10 +141,6 @@ class _TaskFormState extends State<TaskForm> {
                   }).toList(),
                   onChanged: (String? newValue) {
                     _priority = newValue!;
-
-                    setState(() {
-                      _dropdownValue = newValue;
-                    });
                   },
                 )
               ],

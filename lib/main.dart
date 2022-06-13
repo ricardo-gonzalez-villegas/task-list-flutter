@@ -18,7 +18,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Task Manager', home: Home());
+    return const MaterialApp(
+      title: 'Task Manager',
+      home: Home(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
 

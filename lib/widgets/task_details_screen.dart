@@ -2,6 +2,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:task_list/main.dart';
+import 'package:task_list/widgets/update_task_screen.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
   const TaskDetailsScreen({super.key, required this.id});
@@ -18,7 +19,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () => print('Edit'),
+              onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UpdateTaskScreen(id: widget.id)),
+                  ),
               icon: const FaIcon(FontAwesomeIcons.penToSquare))
         ],
         leading: IconButton(
